@@ -1,6 +1,6 @@
 package ru.zubov.swecor.service;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Intellij IDEA.
@@ -14,7 +14,10 @@ public interface SimpleActionsForService<E, I> {
 
     E findById(I id);
 
-    List<E> findAll();
+    Set<E> findAll();
 
     void delete(I id);
+
+    Set<E> findAllDeep();
+
 }

@@ -6,8 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.zubov.swecor.model.Project;
 import ru.zubov.swecor.repository.ProjectRepository;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -19,7 +20,7 @@ import java.util.Optional;
  */
 @Slf4j
 @Service
-public class ProjectService implements SimpleActionsForService<Project, String> {
+public class ProjectService implements SimpleActionsForService<Project, Integer> {
     private final ProjectRepository repository;
 
     public ProjectService(ProjectRepository repository) {
@@ -34,7 +35,7 @@ public class ProjectService implements SimpleActionsForService<Project, String> 
     }
 
     @Override
-    public Project findById(String id) {
+    public Project findById(Integer id) {
         Optional<Project> result = this.repository.findById(id);
         if (result.isPresent()) {
             log.info("Find project by id - {} successfully found", id);
@@ -45,14 +46,14 @@ public class ProjectService implements SimpleActionsForService<Project, String> 
     }
 
     @Override
-    public List<Project> findAll() {
+    public Set<Project> findAll() {
         Iterable<Project> result = this.repository.findAll();
-        return IterableUtils.toList(result);
+        return new HashSet<>(IterableUtils.toList(result));
     }
 
     @Override
-    public void delete(String id) {
-        if (id == null || id.equals("")) {
+    public void delete(Integer id) {
+        if (id == null) {
             log.info("Delete project id - {} is empty.", id);
             return;
         }
@@ -60,5 +61,10 @@ public class ProjectService implements SimpleActionsForService<Project, String> 
         project.setId(id);
         this.repository.delete(project);
         log.info("Delete project id - {} complete.", id);
+    }
+
+    @Override
+    public Set<Project> findAllDeep() {
+        return this.repository.findAllDeep();
     }
 }
