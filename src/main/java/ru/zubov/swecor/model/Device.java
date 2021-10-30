@@ -1,11 +1,11 @@
 package ru.zubov.swecor.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.*;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 
 /**
@@ -17,28 +17,47 @@ import java.util.List;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "devices")
 public class Device {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
-    private Project project_id;
+    @JsonIgnore
+    private Project projectId;
 
     @Column(name = "serial_number")
-    private String serial_number;
+    private String serialNumber;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Event> events;
+    @OneToMany(mappedBy = "deviceId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Event> events;
 
-    @Column(name = "type")
-    private Type type;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Device device = (Device) o;
+        return id == device.id &&
+                Objects.equals(projectId, device.projectId) &&
+                Objects.equals(serialNumber, device.serialNumber);
+    }
 
-    @Column(name = "is_read")
-    private Boolean is_read;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, projectId, serialNumber);
+    }
 
+    @Override
+    public String toString() {
+        return "Device{" +
+                "id=" + id +
+                ", projectId=" + projectId +
+                ", serialNumber='" + serialNumber + '\'' +
+                '}';
+    }
 }

@@ -1,15 +1,10 @@
 package ru.zubov.swecor.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Objects;
+import java.util.Set;
 
 
 /**
@@ -21,14 +16,32 @@ import javax.persistence.Table;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "projects")
 public class Project {
     @Id
-    private String id;
+    private int id;
 
     @Column(name = "name")
     private String name;
+
+    @OneToMany(mappedBy = "projectId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Device> devices;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Project project = (Project) o;
+        return id == project.id &&
+                Objects.equals(name, project.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 
 }

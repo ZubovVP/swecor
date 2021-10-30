@@ -1,13 +1,12 @@
 package ru.zubov.swecor.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.annotation.*;
+import com.sun.istack.NotNull;
+import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
+import java.util.Objects;
 
 
 /**
@@ -19,17 +18,54 @@ import java.sql.Date;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "events")
 public class Event {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id")
-    private Device device_id;
-    @Column(name = "date")
+    @JsonIgnore
+    private Device deviceId;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "data")
     private Date date;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private Type type;
+
+    @NotNull
+    @Column(name = "is_read")
+    private Boolean isRead;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return id == event.id &&
+                isRead == event.isRead &&
+                type == event.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, type, isRead);
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", date=" + date +
+                ", type=" + type +
+                ", isRead=" + isRead +
+                '}';
+    }
 }
