@@ -29,16 +29,20 @@ public class ProjectService implements ProjectActionsAble<Project> {
 
     @Override
     public Optional<Project> save(Project element) {
+        if(!validateProject(element)){
+            throw new NullPointerException("Project doesn't have name");
+        }
+        log.info("Processing add/update project {}", element);
         Optional<Project> result = Optional.of(this.repository.save(element));
         log.info("Project {} created successfully", element);
-        return null;
+        return result;
     }
 
     @Override
     public Optional<Project> findById(Integer id) {
         Optional<Project> result = this.repository.findById(id);
         if (result.isPresent()) {
-            log.info("Find project by id - {} successfully found", id);
+            log.info("Find project by id - {} successfully", id);
         } else {
             log.info("Find project by id - {} don't found", id);
         }
@@ -66,5 +70,9 @@ public class ProjectService implements ProjectActionsAble<Project> {
     @Override
     public Optional<Set<Project>> findAllDeep() {
         return Optional.of(this.repository.findAllDeep());
+    }
+
+    private boolean validateProject(Project project) {
+        return !project.getName().isBlank();
     }
 }

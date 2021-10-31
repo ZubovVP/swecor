@@ -1,6 +1,6 @@
 package ru.zubov.swecor.service.event;
 
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 import ru.zubov.swecor.model.Event;
@@ -18,7 +18,7 @@ import java.util.Set;
  * Version: $.
  * Date: 29.10.2021.
  */
-@Log4j
+@Slf4j
 @Service
 public class EventService implements EventActionsAble<Event> {
     private final EventRepository repository;
@@ -29,12 +29,24 @@ public class EventService implements EventActionsAble<Event> {
 
     @Override
     public Optional<Event> save(Event element) {
-        return Optional.of(this.repository.save(element));
+        if (!validateEvent(element)) {
+            throw new NullPointerException("Event doesn't have type or device id.");
+        }
+        log.info("Processing add/update event {}", element);
+        Optional<Event> result = Optional.of(this.repository.save(element));
+        log.info("Event {} created successfully", element);
+        return result;
     }
 
     @Override
     public Optional<Event> findById(Integer id) {
-        return this.repository.findById(id);
+        Optional<Event> result = this.repository.findById(id);
+        if (result.isPresent()) {
+            log.info("Find event by id - {} successfully", id);
+        } else {
+            log.info("Find device by id - {} don't found", id);
+        }
+        return result;
     }
 
     @Override
@@ -45,8 +57,17 @@ public class EventService implements EventActionsAble<Event> {
 
     @Override
     public void delete(Integer id) {
+        if (id == null) {
+            log.info("Delete event id - {} is empty.", id);
+            return;
+        }
         Event event = new Event();
         event.setId(id);
         this.repository.delete(event);
+        log.info("Delete event id - {} complete.", id);
+    }
+
+    private boolean validateEvent(Event event) {
+        return !(event.getType() == null || event.getDeviceId().getId() == 0);
     }
 }

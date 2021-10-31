@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import ru.zubov.swecor.model.Device;
 import ru.zubov.swecor.model.Project;
 import ru.zubov.swecor.model.Type;
-import ru.zubov.swecor.model.deviceInfo.InfoForDevice;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -43,16 +42,14 @@ public class ProjectInfo {
         AtomicInteger stableDevices = new AtomicInteger(0);
         LocalDateTime dateBefore1Day = LocalDateTime.now(ZoneOffset.UTC).minusDays(1);
 
-        devices.forEach(e -> {
-            e.getEvents().forEach(i -> {
-                if (i.getType().name().equals(Type.EVENT.name())) {
-                    stableDevices.incrementAndGet();
-                } else if ((i.getType().name().equals(Type.ERROR.name()) || i.getType().name().equals(Type.WARNING.name()))
-                        && LocalDateTime.ofInstant(i.getDate().toInstant(), ZoneOffset.UTC).isAfter(dateBefore1Day)) {
-                    deviceWithErrors.incrementAndGet();
-                }
-            });
-        });
+        devices.forEach(e -> e.getEvents().forEach(i -> {
+            if (i.getType().name().equals(Type.EVENT.name())) {
+                stableDevices.incrementAndGet();
+            } else if ((i.getType().name().equals(Type.ERROR.name()) || i.getType().name().equals(Type.WARNING.name()))
+                    && LocalDateTime.ofInstant(i.getDate().toInstant(), ZoneOffset.UTC).isAfter(dateBefore1Day)) {
+                deviceWithErrors.incrementAndGet();
+            }
+        }));
         return Map.of(InfoForProject.deviceCount, devices.size(), InfoForProject.deviceWithErrors, deviceWithErrors.get(), InfoForProject.stableDevices, stableDevices.get());
     }
 

@@ -1,5 +1,6 @@
 package ru.zubov.swecor.service.device;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 import ru.zubov.swecor.model.Device;
@@ -18,6 +19,7 @@ import java.util.Set;
  * Version: $.
  * Date: 29.10.2021.
  */
+@Slf4j
 @Service
 public class DeviceService implements DeviceActionsAble<Device> {
     private final DeviceRepository repository;
@@ -28,12 +30,24 @@ public class DeviceService implements DeviceActionsAble<Device> {
 
     @Override
     public Optional<Device> save(Device element) {
-        return Optional.of(this.repository.save(element));
+        if(!validateDevice(element)){
+            throw new NullPointerException("Device doesn't have SerialNumber or project id.");
+        }
+        log.info("Processing add/update device {}", element);
+        Optional<Device> result = Optional.of(this.repository.save(element));
+        log.info("Device {} created successfully", element);
+        return result;
     }
 
     @Override
     public Optional<Device> findById(Integer id) {
-        return this.repository.findById(id);
+        Optional<Device> result = this.repository.findById(id);
+        if (result.isPresent()) {
+            log.info("Find device by id - {} successfully", id);
+        } else {
+            log.info("Find device by id - {} don't found", id);
+        }
+        return result;
     }
 
     @Override
@@ -44,8 +58,13 @@ public class DeviceService implements DeviceActionsAble<Device> {
 
     @Override
     public void delete(Integer id) {
+        if (id == null) {
+            log.info("Delete device id - {} is empty.", id);
+            return;
+        }
         Device device = new Device();
         device.setId(id);
+        log.info("Delete device id - {} complete.", id);
         this.repository.delete(device);
     }
 
@@ -54,5 +73,9 @@ public class DeviceService implements DeviceActionsAble<Device> {
         Project project = new Project();
         project.setId(idProject);
         return this.repository.findAllDevicesByProject(project);
+    }
+
+    private boolean validateDevice(Device device) {
+        return !(device.getSerialNumber().isBlank() || device.getProjectId().getId() == 0);
     }
 }
