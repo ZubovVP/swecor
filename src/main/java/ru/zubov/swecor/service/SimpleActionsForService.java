@@ -1,5 +1,6 @@
 package ru.zubov.swecor.service;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -10,14 +11,14 @@ import java.util.Set;
  * Date: 29.10.2021.
  */
 public interface SimpleActionsForService<E, I> {
-    E save(E element);
+    Optional<E> save(E element);
 
-    E findById(I id);
+    Optional<E> findById(I id);
 
-    Set<E> findAll();
+    Optional<Set<E>> findAll();
 
     void delete(I id);
 
-    Set<E> findAllDeep();
+
 
 }

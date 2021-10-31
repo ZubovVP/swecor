@@ -1,4 +1,4 @@
-package ru.zubov.swecor.service;
+package ru.zubov.swecor.service.project;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
@@ -20,7 +20,7 @@ import java.util.Set;
  */
 @Slf4j
 @Service
-public class ProjectService implements SimpleActionsForService<Project, Integer> {
+public class ProjectService implements ProjectActionsAble<Project> {
     private final ProjectRepository repository;
 
     public ProjectService(ProjectRepository repository) {
@@ -28,27 +28,27 @@ public class ProjectService implements SimpleActionsForService<Project, Integer>
     }
 
     @Override
-    public Project save(Project element) {
-        this.repository.save(element);
+    public Optional<Project> save(Project element) {
+        Optional<Project> result = Optional.of(this.repository.save(element));
         log.info("Project {} created successfully", element);
         return null;
     }
 
     @Override
-    public Project findById(Integer id) {
+    public Optional<Project> findById(Integer id) {
         Optional<Project> result = this.repository.findById(id);
         if (result.isPresent()) {
             log.info("Find project by id - {} successfully found", id);
         } else {
             log.info("Find project by id - {} don't found", id);
         }
-        return result.orElse(null);
+        return result;
     }
 
     @Override
-    public Set<Project> findAll() {
+    public Optional<Set<Project>> findAll() {
         Iterable<Project> result = this.repository.findAll();
-        return new HashSet<>(IterableUtils.toList(result));
+        return Optional.of(new HashSet<>(IterableUtils.toList(result)));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ProjectService implements SimpleActionsForService<Project, Integer>
     }
 
     @Override
-    public Set<Project> findAllDeep() {
-        return this.repository.findAllDeep();
+    public Optional<Set<Project>> findAllDeep() {
+        return Optional.of(this.repository.findAllDeep());
     }
 }

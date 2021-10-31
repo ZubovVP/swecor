@@ -1,11 +1,13 @@
-package ru.zubov.swecor.service;
+package ru.zubov.swecor.service.device;
 
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 import ru.zubov.swecor.model.Device;
+import ru.zubov.swecor.model.Project;
 import ru.zubov.swecor.repository.DeviceRepository;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -17,7 +19,7 @@ import java.util.Set;
  * Date: 29.10.2021.
  */
 @Service
-public class DeviceService implements SimpleActionsForService<Device, Integer> {
+public class DeviceService implements DeviceActionsAble<Device> {
     private final DeviceRepository repository;
 
     public DeviceService(DeviceRepository repository) {
@@ -25,19 +27,19 @@ public class DeviceService implements SimpleActionsForService<Device, Integer> {
     }
 
     @Override
-    public Device save(Device element) {
-        return this.repository.save(element);
+    public Optional<Device> save(Device element) {
+        return Optional.of(this.repository.save(element));
     }
 
     @Override
-    public Device findById(Integer id) {
-        return this.repository.findById(id).orElse(null);
+    public Optional<Device> findById(Integer id) {
+        return this.repository.findById(id);
     }
 
     @Override
-    public Set<Device> findAll() {
+    public Optional<Set<Device>> findAll() {
         Iterable<Device> result = this.repository.findAll();
-        return new HashSet<>(IterableUtils.toList(result));
+        return Optional.of(new HashSet<>(IterableUtils.toList(result)));
     }
 
     @Override
@@ -48,7 +50,9 @@ public class DeviceService implements SimpleActionsForService<Device, Integer> {
     }
 
     @Override
-    public Set<Device> findAllDeep() {
-        return this.repository.findAllDeep();
+    public Optional<Set<Device>> findAllDevicesByProject(int idProject) {
+        Project project = new Project();
+        project.setId(idProject);
+        return this.repository.findAllDevicesByProject(project);
     }
 }

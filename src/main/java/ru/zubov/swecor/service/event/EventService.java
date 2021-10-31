@@ -1,11 +1,13 @@
-package ru.zubov.swecor.service;
+package ru.zubov.swecor.service.event;
 
+import lombok.extern.log4j.Log4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 import ru.zubov.swecor.model.Event;
 import ru.zubov.swecor.repository.EventRepository;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -16,8 +18,9 @@ import java.util.Set;
  * Version: $.
  * Date: 29.10.2021.
  */
+@Log4j
 @Service
-public class EventService implements SimpleActionsForService<Event, Integer> {
+public class EventService implements EventActionsAble<Event> {
     private final EventRepository repository;
 
     public EventService(EventRepository repository) {
@@ -25,28 +28,25 @@ public class EventService implements SimpleActionsForService<Event, Integer> {
     }
 
     @Override
-    public Event save(Event element) {
-        return null;
+    public Optional<Event> save(Event element) {
+        return Optional.of(this.repository.save(element));
     }
 
     @Override
-    public Event findById(Integer id) {
-        return null;
+    public Optional<Event> findById(Integer id) {
+        return this.repository.findById(id);
     }
 
     @Override
-    public Set<Event> findAll() {
+    public Optional<Set<Event>> findAll() {
         Iterable<Event> result = this.repository.findAll();
-        return new HashSet<>(IterableUtils.toList(result));
+        return Optional.of(new HashSet<>(IterableUtils.toList(result)));
     }
 
     @Override
     public void delete(Integer id) {
-
-    }
-
-    @Override
-    public Set<Event> findAllDeep() {
-        return null;
+        Event event = new Event();
+        event.setId(id);
+        this.repository.delete(event);
     }
 }
