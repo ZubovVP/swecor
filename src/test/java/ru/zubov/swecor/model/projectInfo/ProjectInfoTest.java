@@ -6,13 +6,9 @@ import ru.zubov.swecor.model.Device;
 import ru.zubov.swecor.model.Event;
 import ru.zubov.swecor.model.Project;
 import ru.zubov.swecor.model.Type;
-import ru.zubov.swecor.model.deviceInfo.DeviceInfo;
-import ru.zubov.swecor.model.deviceInfo.InfoForDevice;
 
 import java.util.Date;
 import java.util.HashSet;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by Intellij IDEA.

@@ -3,7 +3,6 @@ package ru.zubov.swecor.service.event;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
-import ru.zubov.swecor.model.Device;
 import ru.zubov.swecor.model.Event;
 import ru.zubov.swecor.repository.EventRepository;
 

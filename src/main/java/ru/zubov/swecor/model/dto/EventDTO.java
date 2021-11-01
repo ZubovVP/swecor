@@ -1,15 +1,9 @@
 package ru.zubov.swecor.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.zubov.swecor.model.Device;
 import ru.zubov.swecor.model.Event;
 import ru.zubov.swecor.model.Type;
 
-import javax.persistence.*;
 import java.util.Date;
 
 

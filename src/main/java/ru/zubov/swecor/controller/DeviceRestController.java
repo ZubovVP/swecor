@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.zubov.swecor.model.Device;
 import ru.zubov.swecor.model.deviceInfo.DeviceInfo;
 import ru.zubov.swecor.model.dto.DeviceDTO;
-import ru.zubov.swecor.model.dto.ProjectDTO;
 import ru.zubov.swecor.service.device.DeviceActionsAble;
 
 import java.util.Map;

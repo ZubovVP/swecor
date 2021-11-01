@@ -1,6 +1,5 @@
 package ru.zubov.swecor.model;
 
-import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;

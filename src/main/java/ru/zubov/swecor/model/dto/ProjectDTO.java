@@ -1,16 +1,9 @@
 package ru.zubov.swecor.model.dto;
 
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.zubov.swecor.model.Device;
-import ru.zubov.swecor.model.Event;
 import ru.zubov.swecor.model.Project;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
 
