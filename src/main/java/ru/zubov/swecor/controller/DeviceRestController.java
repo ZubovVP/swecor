@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.zubov.swecor.model.Device;
 import ru.zubov.swecor.model.deviceInfo.DeviceInfo;
+import ru.zubov.swecor.model.dto.DeviceDTO;
+import ru.zubov.swecor.model.dto.ProjectDTO;
 import ru.zubov.swecor.service.device.DeviceActionsAble;
 
 import java.util.Map;
@@ -39,26 +41,26 @@ public class DeviceRestController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Device> saveOrUpdate(@RequestBody Device device) {
+    public ResponseEntity<DeviceDTO> saveOrUpdate(@RequestBody Device device) {
         Optional<Device> result = this.deviceService.save(device);
         return result.map(value -> new ResponseEntity<>(
-                value, HttpStatus.CREATED
+                new DeviceDTO(value), HttpStatus.CREATED
         )).orElseGet(() -> new ResponseEntity<>(
                 null, HttpStatus.BAD_REQUEST
         ));
     }
 
     @GetMapping("/find")
-    private ResponseEntity<Set<Device>> findAll() {
+    private ResponseEntity<Set<DeviceDTO>> findAll() {
         Optional<Set<Device>> devices = this.deviceService.findAll();
-        return devices.map(deviceSet -> new ResponseEntity<>(deviceSet, HttpStatus.FOUND))
+        return devices.map(projectSet -> new ResponseEntity<>(projectSet.stream().map(DeviceDTO::new).collect(Collectors.toSet()), HttpStatus.FOUND))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NO_CONTENT));
     }
 
     @GetMapping("/find/{id}")
-    public ResponseEntity<Device> findById(@PathVariable int id) {
+    public ResponseEntity<DeviceDTO> findById(@PathVariable int id) {
         Optional<Device> device = this.deviceService.findById(id);
-        return device.map(value -> new ResponseEntity<>(value, HttpStatus.FOUND))
+        return device.map(value -> new ResponseEntity<>(new DeviceDTO(value), HttpStatus.FOUND))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 

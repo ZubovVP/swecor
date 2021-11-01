@@ -28,14 +28,20 @@ public class Device {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
-    @JsonIgnore
+  //  @JsonBackReference
     private Project projectId;
 
     @Column(name = "serial_number")
     private String serialNumber;
 
     @OneToMany(mappedBy = "deviceId", cascade = CascadeType.ALL, orphanRemoval = true)
+   // @JsonManagedReference
+//    @JsonIgnoreProperties("deviceId")
     private Set<Event> events;
+
+    public static Device of(int id, Project projectId, String serialNumber, Set<Event> events) {
+        return new Device(id, projectId, serialNumber, events);
+    }
 
     @Override
     public boolean equals(Object o) {

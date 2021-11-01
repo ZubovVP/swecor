@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Version: $.
  * Date: 30.10.2021.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @NoArgsConstructor
 public class ProjectInfo {

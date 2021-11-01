@@ -1,5 +1,7 @@
 package ru.zubov.swecor.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,7 +30,13 @@ public class Project {
     private String name;
 
     @OneToMany(mappedBy = "projectId", cascade = CascadeType.ALL, orphanRemoval = true)
+   // @JsonManagedReference
+//    @JsonIgnoreProperties("projectId")
     private Set<Device> devices;
+
+    public static Project of(int id, String name, Set<Device> devices) {
+        return new Project(id, name, devices);
+    }
 
     @Override
     public boolean equals(Object o) {

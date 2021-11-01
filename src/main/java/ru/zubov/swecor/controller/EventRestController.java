@@ -4,10 +4,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.zubov.swecor.model.Event;
+import ru.zubov.swecor.model.dto.EventDTO;
 import ru.zubov.swecor.service.event.EventActionsAble;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 /**
@@ -27,26 +29,26 @@ public class EventRestController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Event> saveOrUpdate(@RequestBody Event event) {
+    public ResponseEntity<EventDTO> saveOrUpdate(@RequestBody Event event) {
         Optional<Event> result = this.eventService.save(event);
         return result.map(value -> new ResponseEntity<>(
-                value, HttpStatus.CREATED
+                new EventDTO(value), HttpStatus.CREATED
         )).orElseGet(() -> new ResponseEntity<>(
                 null, HttpStatus.BAD_REQUEST
         ));
     }
 
     @GetMapping("/find")
-    private ResponseEntity<Set<Event>> findAll() {
+    private ResponseEntity<Set<EventDTO>> findAll() {
         Optional<Set<Event>> devices = this.eventService.findAll();
-        return devices.map(deviceSet -> new ResponseEntity<>(deviceSet, HttpStatus.FOUND))
+        return devices.map(projectSet -> new ResponseEntity<>(projectSet.stream().map(EventDTO::new).collect(Collectors.toSet()), HttpStatus.FOUND))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NO_CONTENT));
     }
 
     @GetMapping("/find/{id}")
-    public ResponseEntity<Event> findById(@PathVariable int id) {
+    public ResponseEntity<EventDTO> findById(@PathVariable int id) {
         Optional<Event> device = this.eventService.findById(id);
-        return device.map(value -> new ResponseEntity<>(value, HttpStatus.FOUND))
+        return device.map(value -> new ResponseEntity<>(new EventDTO(value), HttpStatus.FOUND))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 

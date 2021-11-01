@@ -30,9 +30,7 @@ public class DeviceService implements DeviceActionsAble<Device> {
 
     @Override
     public Optional<Device> save(Device element) {
-        if(!validateDevice(element)){
-            throw new NullPointerException("Device doesn't have SerialNumber or project id.");
-        }
+        validateDevice(element);
         log.info("Processing add/update device {}", element);
         Optional<Device> result = Optional.of(this.repository.save(element));
         log.info("Device {} created successfully", element);
@@ -75,7 +73,9 @@ public class DeviceService implements DeviceActionsAble<Device> {
         return this.repository.findAllDevicesByProject(project);
     }
 
-    private boolean validateDevice(Device device) {
-        return !(device.getSerialNumber().isBlank() || device.getProjectId().getId() == 0);
+    private void validateDevice(Device device) {
+        if (device == null || device.getSerialNumber() == null || device.getProjectId().getId() == 0 || device.getSerialNumber().isBlank()) {
+            throw new NullPointerException("Device or serial number or project id mustn't be empty");
+        }
     }
 }

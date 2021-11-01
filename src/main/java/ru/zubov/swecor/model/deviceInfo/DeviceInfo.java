@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Version: $.
  * Date: 30.10.2021.
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @NoArgsConstructor
 public class DeviceInfo {
@@ -52,6 +51,6 @@ public class DeviceInfo {
                 errorCount.incrementAndGet();
             }
         });
-        return Map.of(InfoForDevice.eventCount, errorCount.get(), InfoForDevice.warningCount, warningCount.get(), InfoForDevice.errorCount, eventCount.get());
+        return Map.of(InfoForDevice.eventCount, eventCount.get(), InfoForDevice.warningCount, warningCount.get(), InfoForDevice.errorCount, errorCount.get());
     }
 }

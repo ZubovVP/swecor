@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.zubov.swecor.model.Project;
+import ru.zubov.swecor.model.dto.ProjectDTO;
 import ru.zubov.swecor.model.projectInfo.ProjectInfo;
 import ru.zubov.swecor.service.project.ProjectActionsAble;
 
@@ -36,26 +37,26 @@ public class ProjectRestController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Project> saveOrUpdate(@RequestBody Project project) {
+    public ResponseEntity<ProjectDTO> saveOrUpdate(@RequestBody Project project) {
         Optional<Project> result = this.projectService.save(project);
         return result.map(value -> new ResponseEntity<>(
-                value, HttpStatus.CREATED
+                new ProjectDTO(value), HttpStatus.CREATED
         )).orElseGet(() -> new ResponseEntity<>(
                 null, HttpStatus.BAD_REQUEST
         ));
     }
 
     @GetMapping("/find")
-    private ResponseEntity<Set<Project>> findAll() {
-        Optional<Set<Project>> devices = this.projectService.findAll();
-        return devices.map(deviceSet -> new ResponseEntity<>(deviceSet, HttpStatus.FOUND))
+    private ResponseEntity<Set<ProjectDTO>> findAll() {
+        Optional<Set<Project>> projects = this.projectService.findAll();
+        return projects.map(projectSet -> new ResponseEntity<>(projectSet.stream().map(ProjectDTO::new).collect(Collectors.toSet()), HttpStatus.FOUND))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NO_CONTENT));
     }
 
     @GetMapping("/find/{id}")
-    public ResponseEntity<Project> findById(@PathVariable int id) {
+    public ResponseEntity<ProjectDTO> findById(@PathVariable int id) {
         Optional<Project> device = this.projectService.findById(id);
-        return device.map(value -> new ResponseEntity<>(value, HttpStatus.FOUND))
+        return device.map(value -> new ResponseEntity<>(new ProjectDTO(value), HttpStatus.FOUND))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 

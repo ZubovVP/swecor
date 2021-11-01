@@ -1,6 +1,5 @@
 package ru.zubov.swecor.model;
 
-import com.fasterxml.jackson.annotation.*;
 import com.sun.istack.NotNull;
 import lombok.*;
 
@@ -29,7 +28,6 @@ public class Event {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id")
-    @JsonIgnore
     private Device deviceId;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -43,6 +41,10 @@ public class Event {
     @NotNull
     @Column(name = "is_read")
     private Boolean isRead;
+
+    public static Event of(int id, Device deviceId, Date date, Type type, Boolean isRead){
+        return new Event(id, deviceId, date, type, isRead);
+    }
 
     @Override
     public boolean equals(Object o) {

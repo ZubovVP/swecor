@@ -3,6 +3,7 @@ package ru.zubov.swecor.service.event;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
+import ru.zubov.swecor.model.Device;
 import ru.zubov.swecor.model.Event;
 import ru.zubov.swecor.repository.EventRepository;
 
@@ -29,9 +30,7 @@ public class EventService implements EventActionsAble<Event> {
 
     @Override
     public Optional<Event> save(Event element) {
-        if (!validateEvent(element)) {
-            throw new NullPointerException("Event doesn't have type or device id.");
-        }
+        validateEvent(element);
         log.info("Processing add/update event {}", element);
         Optional<Event> result = Optional.of(this.repository.save(element));
         log.info("Event {} created successfully", element);
@@ -67,7 +66,9 @@ public class EventService implements EventActionsAble<Event> {
         log.info("Delete event id - {} complete.", id);
     }
 
-    private boolean validateEvent(Event event) {
-        return !(event.getType() == null || event.getDeviceId().getId() == 0);
+    private void validateEvent(Event event) {
+        if (event == null || event.getType() == null || event.getDeviceId().getId() == 0) {
+            throw new NullPointerException("Event or type or device id mustn't be empty");
+        }
     }
 }

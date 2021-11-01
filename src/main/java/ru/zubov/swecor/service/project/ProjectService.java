@@ -29,9 +29,7 @@ public class ProjectService implements ProjectActionsAble<Project> {
 
     @Override
     public Optional<Project> save(Project element) {
-        if(!validateProject(element)){
-            throw new NullPointerException("Project doesn't have name");
-        }
+        validateProject(element);
         log.info("Processing add/update project {}", element);
         Optional<Project> result = Optional.of(this.repository.save(element));
         log.info("Project {} created successfully", element);
@@ -72,7 +70,9 @@ public class ProjectService implements ProjectActionsAble<Project> {
         return Optional.of(this.repository.findAllDeep());
     }
 
-    private boolean validateProject(Project project) {
-        return !project.getName().isBlank();
+    private void validateProject(Project project) {
+        if(project == null || project.getName() == null || project.getName().isBlank()){
+            throw new NullPointerException("Project or name of project mustn't be empty");
+        }
     }
 }
